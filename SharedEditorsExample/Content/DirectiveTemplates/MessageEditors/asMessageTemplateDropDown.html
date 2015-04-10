@@ -1,0 +1,13 @@
+﻿<span class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-text-width"></i>
+        <span>&nbsp;{{text}}&nbsp;</span>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu scrollable-menu text-left">
+        <li ng-repeat="template in messageTemplates track by $index">
+            <a href="" ng-click="onMessageTemplateSelect({messageTemplate:template})">{{template.MessageTemplateName}}</a>
+        </li>
+        <li ng-hide="messageTemplates.length>0"><a>No Templates</a></li>
+    </ul>
+</span>

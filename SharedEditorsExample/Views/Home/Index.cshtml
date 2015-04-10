@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "HOME";
+}
+
+<script>
+
+    var homeApp = angular.module('homeApp', []);
+
+    homeApp.config(function () {
+    });
+
+    homeApp.controller('homeController', function ($scope) {
+        $scope.Message = "Click below to make sure Angular is working.";
+        $scope.changeText = function(message) {
+            $scope.Message = message;
+
+        };
+    });
+</script>
+
+<div class="jumbotron">
+    <h1>HOME</h1>
+</div>
+
+<div ng-app="homeApp">
+    <div class="row">
+        <div class="col-md-4">
+            <div ng-controller="homeController">
+                <h2>Angular Test</h2>
+                <p>{{Message}}</p>
+                <button class="btn btn-success" ng-click="changeText('Success! Angular is running.')">Test Now</button>
+            </div>
+        </div>
+        <div class="col-md-4">
+        </div>
+    </div>
+</div>

@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "Page2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    var pageTwoApp = angular.module('pageTwoApp', ['alertsolutions']);
+    pageTwoApp.controller('mainPageController', function ($scope, $log, mergeFieldService, messageTemplateService) {
+        $scope.activeTab = 1;
+
+        $scope.smsContent = "";
+        $scope.voiceContent = "";
+        $scope.emailEditModel = {};
+
+        $scope.emailTemplates = [];
+        $scope.smsTemplates = [];
+        $scope.voiceTemplates = [];
+
+        $scope.mergeFields = [];
+
+        $scope.init = function () {
+            $log.debug('init()');
+            $scope.getMergeFields();
+            $scope.getVoiceMessageTemplates();
+            $scope.getEmailMessageTemplates();
+            $scope.getSmsMessageTemplates();
+        };
+
+        $scope.getMergeFields = function () {
+            mergeFieldService.GetMergeFields().then(function (data) {
+                $scope.mergeFields = data;
+            }).catch(function (data) {
+                $log.error('getMergeFields', data);
+                $scope.mergeFields = [];
+            });
+        };
+
+        $scope.getVoiceMessageTemplates = function () {
+            $scope.getMessageTemplates($scope.voiceTemplates, ['voice', 'shared']);
+        };
+        $scope.getEmailMessageTemplates = function () {
+            $scope.getMessageTemplates($scope.emailTemplates, ['email', 'shared']);
+        };
+        $scope.getSmsMessageTemplates = function () {
+            $scope.getMessageTemplates($scope.smsTemplates, ['sms', 'shared']);
+        };
+
+        $scope.getMessageTemplates = function (templates, fileGroups) {
+            messageTemplateService.GetMessageTemplates(fileGroups).then(function (data) {
+                if (data) {
+                    for (var i in data) {
+                        templates.push(data[i]);
+                    }
+                }
+            }).catch(function (data) {
+                $log.error('getMessageTemplates', data);
+                templates = [];
+            });
+        };
+
+        // same code as what the messageTemplateService is using to get the messageTemplate
+        $scope.getMessageTemplateByID = function (id) {
+            messageTemplateService.GetMessageTemplateByID(id).then(function (data) {
+                $scope.templates = data;
+            }).catch(function (data) {
+                $log.error('getMessageTemplateByID', data);
+                $scope.templates = [];
+            });
+        };
+
+        //
+        $scope.selectMessageTemplate = function (messageTemplate) {
+            $log.info('select message template', messageTemplate);
+        };
+    });
+</script>
+
+<h1>Page Two</h1>
+<div class="alert alert-info">
+    <p>Example of editors separated into different tabs</p>
+</div>
+<div ng-app="pageTwoApp" ng-controller="mainPageController" ng-init="init()">
+    <h3>Page Controller</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <p>sms</p>
+            <pre>{{smsContent | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>voice</p>
+            <pre>{{voiceContent | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>email</p>
+            <pre>{{emailEditModel | json}}</pre>
+        </div>
+    </div>
+    <h3>Editor Directives</h3>
+    <ul class="nav nav-tabs" role="tablist">
+        <li ng-class="{active : activeTab==1}"><a href="" ng-click="activeTab=1">SMS</a></li>
+        <li ng-class="{active : activeTab==2}"><a href="" ng-click="activeTab=2">Voice</a></li>
+        <li ng-class="{active : activeTab==3}"><a href="" ng-click="activeTab=3">Email</a></li>
+    </ul>
+    <div class="row" ng-show="activeTab==1">
+        <div class="col-md-12">
+            <as-sms-editor content="smsContent" count-limit="160" merge-fields="mergeFields" message-templates="smsTemplates" on-message-template-select="selectMessageTemplate(messageTemplate)"></as-sms-editor>
+        </div>
+    </div>
+    <div class="row" ng-show="activeTab==2">
+        <div class="col-md-12">
+            <as-simple-voice-editor content="voiceContent" merge-fields="mergeFields" message-templates="voiceTemplates" on-message-template-select="selectMessageTemplate(messageTemplate)"></as-simple-voice-editor>
+        </div>
+    </div>
+    <div class="row" ng-show="activeTab==3">
+        <div class="col-md-12">
+            <as-email-editor edit-model="emailEditModel" merge-fields="mergeFields" message-templates="emailTemplates" on-message-template-select="selectMessageTemplate(messageTemplate)"></as-email-editor>
+        </div>
+    </div>
+</div>

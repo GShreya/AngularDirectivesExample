@@ -1,0 +1,19 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="directive-outline">
+            <h1 style="color:orange;">SMS EDITOR</h1>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    SenderID
+                </div>
+                <input class="form-control" type="text" ng-model="senderId" />
+            </div>
+            <as-enhanced-text-editor content="content" on-change="onChange()" merge-fields="mergeFields" message-templates="messageTemplates"></as-enhanced-text-editor>
+            <div>
+                <button ng-click="clear()">clear</button>
+                <div class="pull-right" ng-class="{ redText: isOverFlow}" ng-show="countLimit">{{content.length}} / {{countLimit}}</div>
+            </div>
+            <div class="alert alert-danger" ng-show="isOverFlow">Text Too Long</div>
+        </div>
+    </div>
+</div>

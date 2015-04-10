@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "EnhancedTextEditor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+
+    var enhancedTextEditorApp = angular.module('enhancedTextEditorApp', ['alertsolutions']);
+    enhancedTextEditorApp.controller('mainPageController', function ($scope, $log, mergeFieldService, messageTemplateService) {
+        $scope.editorContent = "";
+        $scope.mergeFields = [];
+        $scope.templates = [];
+        
+        $scope.init = function () {
+            $log.debug('init()');
+            $scope.getMessageTemplates();
+            $scope.getMergeFields();
+        };
+        $scope.getMessageTemplates = function () {
+            messageTemplateService.GetMessageTemplates().then(function (data) {
+                $scope.templates = data;
+            }).catch(function (data) {
+                $log.error('getMessageTemplates', data);
+                $scope.templates = [];
+            });
+        };
+        
+        $scope.getMergeFields = function () {
+            mergeFieldService.GetMergeFields().then(function (data) {
+                $scope.mergeFields = data;
+            }).catch(function (data) {
+                $log.error('getMergeFields', data);
+                $scope.mergeFields = [];
+            });
+        };
+
+        $scope.ckEditorOptions = {
+            //customConfig: '',
+            language: 'fr',
+            height: "400",
+            width: "100%",
+            skin: "kama",
+            uiColor: "lightgray",
+            removePlugins: 'elementspath',
+            toolbarCanCollapse: false,
+            toolbarStartupExpanded: true,
+            autoParagraph: false,
+            // need to be careful with this, if the customconfig can't be found, it can't load the
+            // bar and throws error saying 'cannot read property length of undefined'
+            //toolbar: 'Moderate',
+        };
+
+    });
+</script>
+
+<h1>Enhanced TextEditor</h1>
+<div class="alert alert-info">
+    <p>Example of the enhancedTextEditor directive, contains the textEditor, and both dropdowns and handles the insertion in it's controller</p>
+</div>
+<div ng-app="enhancedTextEditorApp" ng-controller="mainPageController" ng-init="init()">
+    <h3>Page Content</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <pre>{{editorContent}}</pre>
+        </div>
+    </div>
+    <h3>Directive</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <as-enhanced-html-editor ck-editor-options="ckEditorOptions" content="editorContent" merge-fields="mergeFields" message-templates="templates"></as-enhanced-html-editor>
+            </div>
+        </div>
+    </div>
+</div>

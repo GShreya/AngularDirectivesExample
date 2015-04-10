@@ -1,0 +1,13 @@
+﻿<span class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon glyphicon-pencil"></i>
+        <span>&nbsp;{{text}}&nbsp;</span>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu scrollable-menu text-left">
+        <li ng-repeat="mf in mergeFields track by $index">
+            <a href="" ng-click="onMergeFieldSelect({mergeField:mf})">{{mf}}</a>
+        </li>
+        <li ng-hide="mergeFields.length>0"><a>No Merge Fields</a></li>
+    </ul>
+</span>

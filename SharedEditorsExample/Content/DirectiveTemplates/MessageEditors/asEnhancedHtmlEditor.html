@@ -1,0 +1,11 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="directive-outline">
+            <div>
+                <as-merge-field-drop-down merge-fields="mergeFields" text="Insert MergeField" on-merge-field-select="selectMergeField(mergeField)"></as-merge-field-drop-down>
+                <as-message-template-drop-down message-templates="messageTemplates" text="Insert Templates" on-message-template-select="selectMessageTemplate(messageTemplate)"></as-message-template-drop-down>
+            </div>
+            <as-html-editor ck-editor-options="ckEditorOptions" content="content" on-change="onChange()" set-insert-func="setHtmlEditorInsert(insertFunction)"></as-html-editor>
+        </div>
+    </div>
+</div>

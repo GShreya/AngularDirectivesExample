@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "ControllerAs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    var exampleApp = angular.module('exampleApp', ['alertsolutions']);
+    // pass the function containing the controller (from below) to angular's controller method
+    exampleApp.controller('mainPageController', mainPageController);
+    // need this line for minification, pretty much like normal controllers
+    mainPageController.$inject = ['$log', 'mergeFieldService', 'messageTemplateService'];
+    //declare controller as a function, passing in the dependencies
+    function mainPageController($log, mergeFieldService, messageTemplateService) {
+        // _this can be used as $scope
+        var _this = this;
+        
+        _this.smsContent = "";
+        _this.voiceContent = "";
+        _this.emailEditModel = {};
+        
+        _this.templates = [];
+        _this.mergeFields = [];
+
+        _this.init = function () {
+            $log.debug('init()');
+            _this.getMergeFields();
+            _this.getMessageTemplates();
+        };
+
+        _this.getMergeFields = function () {
+            mergeFieldService.GetMergeFields().then(function (data) {
+                _this.mergeFields = data;
+            }).catch(function (data) {
+                $log.error('getMergeFields', data);
+                _this.mergeFields = [];
+            });
+        };
+
+        _this.getMessageTemplates = function () {
+            messageTemplateService.GetMessageTemplates().then(function (data) {
+                _this.templates = data;
+            }).catch(function (data) {
+                $log.error('getMessageTemplates', data);
+                _this.templates = [];
+            });
+        };
+    };
+</script>
+
+<h1>ControllerAs</h1>
+<div class="alert alert-info">
+    <p>This page uses the Controller As syntax</p>
+    <a href="http://toddmotto.com/digging-into-angulars-controller-as-syntax/">Controller As Article</a>
+</div>
+<!--use the controller's name in ng-controller, but then use the "as _alias_ " syntax afterward-->
+<!--You have to explicitly use the alias you have chosen to access the values-->
+<div ng-app="exampleApp" ng-controller="mainPageController as myCtrl" ng-init="myCtrl.init()">
+    <h3>Page Controller</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <p>sms</p>
+            <pre>{{myCtrl.smsContent | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>email</p>
+            <pre>{{myCtrl.emailEditModel | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>voice</p>
+            <pre>{{myCtrl.voiceContent | json}}</pre>
+        </div>
+    </div>
+    <h3>Editor Directives</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <as-sms-editor content="myCtrl.smsContent" merge-fields="myCtrl.mergeFields" message-templates="myCtrl.templates"></as-sms-editor>
+        </div>
+        <div class="col-md-4">
+            <as-email-editor edit-model="myCtrl.emailEditModel" merge-fields="myCtrl.mergeFields" message-templates="myCtrl.templates"></as-email-editor>
+        </div>
+        <div class="col-md-4">
+            <as-simple-voice-editor content="myCtrl.voiceContent" merge-fields="myCtrl.mergeFields" message-templates="myCtrl.templates"></as-simple-voice-editor>
+        </div>
+    </div>
+</div>

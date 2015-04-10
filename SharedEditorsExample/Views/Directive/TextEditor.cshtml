@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "TextEditor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+
+    var textEditorApp = angular.module('textEditorApp', ['alertsolutions']);
+    textEditorApp.controller('mainPageController', function ($scope, $log) {
+        $scope.inputLimit = 10;
+        $scope.characterCount = 0;
+        $scope.placeHolder = "default placeholder";
+        $scope.content = "beginning text";
+        
+        // this method gets passed into the directive
+        $scope.setTextEditorInsert = function (insertFunction) {
+            // the parameter is an internal method in the directive
+            // we can assign it to a variable on this scope and have it accessible to call here
+            $scope.textEditorInsert = insertFunction;
+        };
+
+        $scope.textEditorClear = function () {
+            $log.debug('attempting to clear texteditor content');
+            $scope.content = "";
+        };
+        $scope.onChange = function() {
+            $log.debug('text editor content is changed');
+        };
+    });
+</script>
+
+<h1>TextEditor</h1>
+<div class="alert alert-info">
+    <p>Example of the basic textEditor directive being used directly, and how you can interact with it</p>
+</div>
+<div ng-app="textEditorApp" ng-controller="mainPageController" ng-init="init()">
+    
+    <h3>Controls</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div>
+                <button ng-click="textEditorInsert('[INSERTED_TEXT]')">Insert</button>
+                <button ng-click="textEditorClear()">Clear</button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div>InputLimit <input type="number" ng-model="inputLimit" /></div>
+            <div>PlaceHolder <input type="text" ng-model="placeHolder" /></div>
+        </div>
+        <div class="col-md-3">
+            <div>Content <textarea ng-model="content"></textarea></div>
+        </div>
+    </div>
+    
+    <h3>Directive</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <as-text-editor rows="10" content="content" on-change="onChange()" input-limit="{{inputLimit}}" place-holder="{{placeHolder}}" set-insert-func="setTextEditorInsert(insertFunction)"></as-text-editor>
+            </div>
+        </div>
+    </div>
+</div>

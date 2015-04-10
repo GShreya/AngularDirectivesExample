@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "Page1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    var pageOneApp = angular.module('pageOneApp', ['alertsolutions']);
+    pageOneApp.controller('mainPageController', function ($scope, $log, mergeFieldService, messageTemplateService) {
+        $scope.smsContent = "";
+        $scope.voiceContent = "";
+        
+        $scope.emailEditModel = {};
+
+        $scope.emailTemplates = [];
+        $scope.smsTemplates = [];
+        $scope.voiceTemplates = [];
+        
+        $scope.mergeFields = [];
+
+        $scope.smsSenderId = "4015551111";
+
+        $scope.init = function () {
+            $log.debug('init()');
+            $scope.getMergeFields();
+            $scope.getVoiceMessageTemplates();
+            $scope.getEmailMessageTemplates();
+            $scope.getSmsMessageTemplates();
+        };
+        
+        $scope.getMergeFields = function () {
+            mergeFieldService.GetMergeFields().then(function (data) {
+                $scope.mergeFields = data;
+            }).catch(function (data) {
+                $log.error('getMergeFields', data);
+                $scope.mergeFields = [];
+            });
+        };
+
+        $scope.getVoiceMessageTemplates = function() {
+            $scope.getMessageTemplates($scope.voiceTemplates, ['voice','shared']);
+        };
+        $scope.getEmailMessageTemplates = function () {
+            $scope.getMessageTemplates($scope.emailTemplates, ['email', 'shared']);
+        };
+        $scope.getSmsMessageTemplates = function () {
+            $scope.getMessageTemplates($scope.smsTemplates, ['sms', 'shared']);
+        };
+
+        $scope.getMessageTemplates = function (templates, fileGroups) {
+            messageTemplateService.GetMessageTemplates(fileGroups).then(function (data) {
+                if (data) {
+                    for (var i in data) {
+                        templates.push(data[i]);
+                    }
+                }
+            }).catch(function (data) {
+                $log.error('getMessageTemplates', data);
+                templates = [];
+            });
+        };
+    });
+</script>
+
+<h1>Page One</h1>
+<div class="alert alert-info">
+    <p>Each editor has it's own elements, and contains an enhancedTextEditor directive</p>
+    <p>EnhancedTextEditor in turn is composed of three sub-directives, mergefieldDD, messagetemplateDD, and textEditor</p>
+    <p>The data populating the mergefieldDD and messagetemplateDD is supplied by the page controller.</p>
+</div>
+<div ng-app="pageOneApp" ng-controller="mainPageController" ng-init="init()">
+    <h3>Page Controller</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <p>sms</p>
+            <pre>{{smsContent | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>email</p>
+            <pre>{{emailEditModel | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>voice</p>
+            <pre>{{voiceContent | json}}</pre>
+        </div>
+    </div>
+    <h3>Editor Directives</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <as-sms-editor content="smsContent" count-limit="160" sender-id="{{smsSenderId}}" merge-fields="mergeFields" message-templates="smsTemplates"></as-sms-editor>
+        </div>
+        <div class="col-md-4">
+            <as-email-editor edit-model="emailEditModel" merge-fields="mergeFields" message-templates="emailTemplates"></as-email-editor>
+        </div>
+        <div class="col-md-4">
+            <as-simple-voice-editor content="voiceContent" merge-fields="mergeFields" message-templates="voiceTemplates"></as-simple-voice-editor>
+        </div>
+    </div>
+</div>

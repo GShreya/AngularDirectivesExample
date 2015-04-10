@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "TextEditor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+
+    var htmlEditorApp = angular.module('htmlEditorApp', ['alertsolutions']);
+    htmlEditorApp.controller('mainPageController', function ($scope, $log) {
+        $scope.inputLimit;
+        $scope.characterCount = 0;
+        $scope.content = "beginning text";
+        
+        // this method gets passed into the directive
+        $scope.setHtmlEditorInsert = function (insertFunction) {
+            // the parameter is an internal method in the directive
+            // we can assign it to a variable on this scope and have it accessible to call here
+            $scope.htmlEditorInsert = insertFunction;
+        };
+
+        $scope.htmlEditorClear = function () {
+            $log.debug('attempting to clear texteditor content');
+            $scope.content = "";
+        };
+        $scope.onChange = function() {
+            $log.debug('html editor content is changed');
+        };
+        
+        $scope.ckEditorOptions = {
+            //customConfig: '',
+            language: 'fr',
+            height: "400",
+            width: "100%",
+            skin: "kama",
+            uiColor: "lightgray",
+            removePlugins: 'elementspath',
+            toolbarCanCollapse: false,
+            toolbarStartupExpanded: true,
+            autoParagraph: false,
+            // need to be careful with this, if the customconfig can't be found, it can't load the
+            // bar and throws error saying 'cannot read property length of undefined'
+            //toolbar: 'Moderate',
+        };
+    });
+</script>
+
+<h1>HtmlEditor</h1>
+<div class="alert alert-info">
+    <p>Example of the basic htmlEditor directive being used directly, and how you can interact with it</p>
+</div>
+<div ng-app="htmlEditorApp" ng-controller="mainPageController" ng-init="init()">
+    
+    <h3>Controls</h3>
+    <div class="row">
+        <div class="col-md-3">
+            <div>
+                <button ng-click="htmlEditorInsert('[INSERTED_TEXT]')">Insert</button>
+                <button ng-click="htmlEditorClear()">Clear</button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div>InputLimit <input type="number" ng-model="inputLimit" /></div>
+        </div>
+        <div class="col-md-3">
+            <div>Content <textarea ng-model="content"></textarea></div>
+        </div>
+    </div>
+    
+    <h3>Directive</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <as-html-editor ck-editor-options="ckEditorOptions" content="content" on-change="onChange()" input-limit="{{inputLimit}}" set-insert-func="setHtmlEditorInsert(insertFunction)"></as-html-editor>
+            </div>
+        </div>
+    </div>
+</div>

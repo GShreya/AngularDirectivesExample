@@ -1,0 +1,1 @@
+﻿var globalApp = angular.module('global', []);

@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "EnhancedTextEditor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+
+    var enhancedHtmlEditorApp = angular.module('enhancedHtmlEditorApp', ['alertsolutions']);
+    enhancedHtmlEditorApp.controller('mainPageController', function ($scope, $log, mergeFieldService, messageTemplateService) {
+        $scope.editorContent = "";
+        $scope.mergeFields = [];
+        $scope.templates = [];
+
+        $scope.init = function () {
+            $log.debug('init()');
+            $scope.getMessageTemplates();
+            $scope.getMergeFields();
+        };
+        $scope.getMessageTemplates = function () {
+            messageTemplateService.GetMessageTemplates().then(function (data) {
+                $scope.templates = data;
+            }).catch(function (data) {
+                $log.error('getMessageTemplates', data);
+                $scope.templates = [];
+            });
+        };
+
+        $scope.getMergeFields = function () {
+            mergeFieldService.GetMergeFields().then(function (data) {
+                $scope.mergeFields = data;
+            }).catch(function (data) {
+                $log.error('getMergeFields', data);
+                $scope.mergeFields = [];
+            });
+        };
+
+    });
+</script>
+
+<h1>Enhanced HtmlEditor</h1>
+<div class="alert alert-info">
+    <p>Example of the enhancedHtmlEditor directive, contains the htmlEditor, and both dropdowns and handles the insertion in it's controller</p>
+</div>
+<div ng-app="enhancedHtmlEditorApp" ng-controller="mainPageController" ng-init="init()">
+    <h3>Page Content</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <pre>{{editorContent}}</pre>
+        </div>
+    </div>
+    <h3>Directive</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <as-enhanced-html-editor content="editorContent" merge-fields="mergeFields" message-templates="templates"></as-enhanced-html-editor>
+            </div>
+        </div>
+    </div>
+</div>

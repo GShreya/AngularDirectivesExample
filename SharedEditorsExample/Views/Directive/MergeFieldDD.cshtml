@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "MF DD";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+
+    var mergeFieldApp = angular.module('mergeFieldApp', ['alertsolutions']);
+
+    mergeFieldApp.config(function () {
+    });
+
+    mergeFieldApp.controller('mainPageController', function ($scope, $log, mergeFieldService) {
+        $scope.editorContent = "";
+        $scope.mergeFields = [];
+        
+        $scope.init = function () {
+            $log.debug('init()');
+            $scope.getMergeFields();
+        };
+        
+        $scope.getMergeFields = function () {
+            mergeFieldService.GetMergeFields().then(function (data) {
+                $scope.mergeFields = data;
+            }).catch(function (data) {
+                $log.error('getMergeFields', data);
+                $scope.mergeFields = [];
+            });
+        };
+
+
+        $scope.selectMergeField = function (mergeField) {
+            $log.debug('select mergeField event', mergeField);
+            $scope.textEditorInsert("%%" + mergeField + "%%");
+        };
+        
+        // this method gets passed into texteditor directive
+        $scope.setTextEditorInsert = function (insertFunction) {
+            // the parameter is an internal method in the texteditor directive
+            // we can assign it to a variable on this scope and have it accessible to call here
+            $scope.textEditorInsert = insertFunction;
+        };
+    });
+</script>
+
+<h1>MergeFieldDD</h1>
+<div class="alert alert-info">
+    <p>Example of the mergefieldDD directive working with the textEditor directive (directly on pageController, not inside an editor directive)</p>
+</div>
+<div ng-app="mergeFieldApp" ng-controller="mainPageController" ng-init="init()">
+    <div class="row">
+        <div class="col-md-12">
+            <as-merge-field-drop-down text="mergefield dd text" merge-fields="mergeFields" on-merge-field-select="selectMergeField(mergeField)"></as-merge-field-drop-down>
+            <as-text-editor set-insert-func="setTextEditorInsert(insertFunction)" content="editorContent"></as-text-editor>
+            <button ng-click="textEditorInsert('[INSERTED_TEXT]')">test insert</button>
+        </div>
+    </div>
+</div>

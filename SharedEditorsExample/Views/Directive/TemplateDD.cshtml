@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Template DD";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+
+    var templateApp = angular.module('templateApp', ['alertsolutions']);
+    templateApp.controller('mainPageController', function ($scope, $log, messageTemplateService) {
+        $scope.editorContent = "";
+        $scope.templates = [];
+        
+
+        $scope.init = function () {
+            $log.debug('init()');
+            $scope.getMessageTemplates();
+        };
+        $scope.getMessageTemplates = function () {
+            messageTemplateService.GetMessageTemplates().then(function (data) {
+                $scope.templates = data;
+            }).catch(function (data) {
+                $log.error('getMessageTemplates', data);
+                $scope.templates = [];
+            });
+        };
+        
+        $scope.selectMessageTemplate = function (messageTemplate) {
+            $log.debug('select template', messageTemplate);
+            //should we clear first, or append the template?
+            $scope.editorContent = "";
+            messageTemplateService.GetMessageTemplateByID(messageTemplate.MessageTemplateID).then(function (data) {
+                if (data.MessageTemplateData) {
+                    $scope.textEditorInsert(data.MessageTemplateData);
+                }
+            }).catch(function (data) {
+                $log.error('retrieve template', data);
+            });
+        };
+        
+        $scope.setTextEditorInsert = function (insertFunction) {
+            $scope.textEditorContent = "";
+            $scope.textEditorInsert = insertFunction;
+        };
+    });
+</script>
+
+<h1>MessageTemplateDD</h1>
+<div class="alert alert-info">
+    <p>Example of the messageTemplate directive working with the textEditor directive (directly on pageController, not inside an editor directive)</p>
+</div>
+<div ng-app="templateApp" ng-controller="mainPageController" ng-init="init()">
+    <div class="row">
+        <div class="col-md-12">
+            <as-message-template-drop-down text="template dd text" message-templates="templates" on-message-template-select="selectMessageTemplate(messageTemplate)"></as-message-template-drop-down>
+            <as-text-editor content="editorContent" set-insert-func="setTextEditorInsert(insertFunction)"></as-text-editor>
+            <button ng-click="textEditorInsert('[INSERTED_TEXT]')">test insert</button>
+        </div>
+    </div>
+</div>

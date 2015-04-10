@@ -1,0 +1,33 @@
+﻿
+textarea {
+    /*prevents user from making it wider than it's containing div*/
+     max-width: 100%;
+}
+
+/* NEW CLASSES */
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+.background-gradient {
+    background: #F4F4F4; /* for non-css3 browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E4E9EE', endColorstr='#D1D4D4'); /* for IE */
+    background: -webkit-gradient(linear, left top, left bottom, from(#E4E9EE), to(#D1D4D4)); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  #E4E9EE,  #D1D4D4); /* for firefox 3.6+ */
+}
+
+.simple-border {
+    border: 1px solid #aaa;
+    border-radius: 7px;
+}
+
+.directive-outline {
+    border: 1px dashed maroon;
+    border-radius: 7px;
+}
+
+.redText {
+    color: red;
+}

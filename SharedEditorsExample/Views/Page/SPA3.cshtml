@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Page3";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    var pageThreeApp = angular.module('pageThreeApp', ['alertsolutions']);
+    pageThreeApp.controller('mainPageController', function ($scope, $log, mergeFieldService, messageTemplateService) {
+        $scope.smsContent = "";
+        $scope.voiceContent = "";
+        $scope.emailEditModel = {};
+        
+        $scope.templates = [];
+        $scope.mergeFields = [];
+
+        $scope.init = function () {
+            $log.debug('init()');
+            $scope.getMergeFields();
+            $scope.getMessageTemplates();
+        };
+
+        $scope.getMergeFields = function () {
+            mergeFieldService.GetMergeFields().then(function (data) {
+                $scope.mergeFields = data;
+            }).catch(function (data) {
+                $log.error('getMergeFields', data);
+                $scope.mergeFields = [];
+            });
+        };
+
+        $scope.getMessageTemplates = function () {
+            messageTemplateService.GetMessageTemplates().then(function (data) {
+                $scope.templates = data;
+            }).catch(function (data) {
+                $log.error('getMessageTemplates', data);
+                $scope.templates = [];
+            });
+        };
+    });
+</script>
+
+<h1>Page Three</h1>
+<div class="alert alert-info">
+    <p>Each template dropdown gets the same list, instead of specifying filegroups</p>
+</div>
+<div ng-app="pageThreeApp" ng-controller="mainPageController" ng-init="init()">
+    <h3>Page Controller</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <p>voice</p>
+            <pre>{{voiceContent | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>email</p>
+            <pre>{{emailEditModel | json}}</pre>
+        </div>
+        <div class="col-md-4">
+            <p>sms</p>
+            <pre>{{smsContent | json}}</pre>
+        </div>
+    </div>
+    <h3>Editor Directives</h3>
+    <div class="row">
+        <div class="col-md-4">
+            <as-simple-voice-editor content="voiceContent" merge-fields="mergeFields" message-templates="templates"></as-simple-voice-editor>
+        </div>
+        <div class="col-md-4">
+            <as-email-editor edit-model="emailEditModel" merge-fields="mergeFields" message-templates="templates"></as-email-editor>
+        </div>
+        <div class="col-md-4">
+            <as-sms-editor content="smsContent" merge-fields="mergeFields" message-templates="templates"></as-sms-editor>
+        </div>
+    </div>
+</div>

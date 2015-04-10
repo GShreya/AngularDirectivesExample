@@ -1,0 +1,26 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div class="directive-outline">
+            <h1 style="color:green;">EMAIL EDITOR</h1>
+            <div class="input-group">
+                <div class="input-group-addon">From Address</div>
+                <input class="form-control" type="text" ng-model="editModel.fromAddress" />
+            </div>
+            <div class="input-group">
+                <div class="input-group-addon">DisplayName</div>
+                <input class="form-control" type="text" ng-model="editModel.displayName" />
+            </div>
+            <div class="input-group">
+                <div class="input-group-addon">Reply-To Address</div>
+                <input class="form-control" type="text" ng-model="editModel.replyTo" />
+            </div>
+            <div class="input-group">
+                <div class="input-group-addon">Subject</div>
+                <input class="form-control" type="text" ng-model="editModel.subject" />
+            </div>
+            <div>
+                <as-enhanced-html-editor ck-editor-options="ckEditorOptions" content="editModel.content" merge-fields="mergeFields" message-templates="messageTemplates"></as-enhanced-html-editor>
+            </div>
+        </div>
+    </div>
+</div>
